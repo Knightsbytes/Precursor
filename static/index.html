@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Precursor</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+    <link rel="manifest" href="icons/site.webmanifest">
+</head>
+<body>
+
+<div id="root">
+
+    <div id="sidebar">
+        <div id="sidebar-header">
+            <div onclick="showPanel('files')">FILES</div>
+        </div>
+        <div id="sidebar-content"></div>
+        <div id="toolbar">
+            <button onclick="saveCurrent()">💾 Save</button>
+            <button onclick="newFile()">➕ New</button>
+            <button onClick="deleteCurrent()">❌ Del</button>
+        </div>
+    </div>
+
+    <div id="main">
+        <div id="tabs"></div>
+        <div id="editor"></div>
+        <div id="terminal"></div>
+    </div>
+
+</div>
+
+<div id="create-file-overlay" class = "hidden">
+    <div id="create-file">
+
+        <div id="create-file-title" class = "create-file-window-text">Create File</div>
+
+        <input id="create-file-input" placeholder="File name..." />
+
+        <div id="create-file-buttons">
+            <button class = "conformation-box-button" id="create-file-confirm">Confirm</button>
+            <button class = "conformation-box-button" id="create-file-cancel">Cancel</button>
+        </div>
+
+    </div>
+</div>
+
+<div id = "delete-file-overlay" class = "hidden">
+    <div id = "delete-file">
+        <div id = "delete-file-title" class = "delete-file-window-text">Delete file</div>
+
+        <div id="delete-file-buttons">
+            <button class = "conformation-box-button" id="delete-file-confirm">Confirm</button>
+            <button class = "conformation-box-button" id="delete-file-cancel">Cancel</button>
+            <br><br>
+            <div id = "delete-file-permanent-conformation-div">
+                <label for="delete-permanent-conformation">Never ask again:</label><input type = "checkbox" value="delete-permanent-conformation" id = "delete-permanent-conformation">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+<script src="explorer.js"></script>
+<script src="editor.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

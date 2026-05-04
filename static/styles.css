@@ -1,0 +1,263 @@
+html, body {
+    margin: 0;
+    height: 100%;
+    background: #1e1e1e;
+    font-family: "Segoe UI", sans-serif;
+    color: #ccc;
+}
+
+#root {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* SIDEBAR */
+#sidebar {
+    width: 260px;
+    background: #252526;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #1a1a1a;
+}
+
+/* TOP SIDEBAR TABS */
+#sidebar-header {
+    display: flex;
+    height: 35px;
+    background: #1e1e1e;
+    border-bottom: 1px solid #111;
+}
+
+#sidebar-header div {
+    flex: 1;
+    text-align: center;
+    line-height: 35px;
+    font-size: 11px;
+    cursor: pointer;
+    color: #888;
+    user-select: none;
+}
+
+#sidebar-header div:hover {
+    background: #2a2a2a;
+    color: #fff;
+}
+
+/* CONTENT */
+#sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px;
+}
+
+/* FILE ITEMS */
+.file-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.file-item:hover {
+    background: #2a2d2e;
+}
+
+/* MAIN */
+#main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* TABS BAR */
+#tabs {
+    display: flex;
+    height: 35px;
+    background: #1e1e1e;
+    border-bottom: 1px solid #111;
+    overflow-x: auto;
+}
+
+/* TAB STYLE (VS CODE LIKE) */
+.tab {
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    font-size: 12px;
+    color: #aaa;
+    background: #2d2d2d;
+    margin-right: 2px;
+    cursor: pointer;
+    user-select: none;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.tab:hover {
+    background: #3a3a3a;
+    color: #fff;
+}
+
+.tab.active {
+    background: #1e1e1e;
+    color: #ffffff;
+    border-bottom: 2px solid #007acc;
+}
+
+/* EDITOR */
+#editor {
+    flex: 1;
+    min-height: 0;
+}
+
+/* TERMINAL */
+#terminal {
+    height: 140px;
+    background: #1a1a1a;
+    border-top: 1px solid #111;
+    padding: 6px;
+    font-family: monospace;
+    font-size: 12px;
+    color: #9cdcfe;
+}
+
+.tab {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.tab span:last-child {
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.icon {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+.file-item {
+    padding: 3px 6px;
+    border-radius: 3px;
+}
+
+.file-item:hover {
+    background: #2a2d2e;
+}
+
+#toolbar {
+    height: 32px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 6px;
+    background: #2b2b2b;
+    border-bottom: 1px solid #111;
+}
+
+#toolbar button {
+    background: #3c3f41;
+    border: none;
+    color: white;
+    padding: 4px 8px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+#toolbar button:hover {
+    background: #4b4f51;
+}
+
+.tab-label {
+    display: flex;
+    align-items: center;
+}
+
+.tab.dirty::before {
+    content: "●";
+    color: #4fc3f7;
+    margin-right: 6px;
+    font-size: 10px;
+}
+
+#create-file-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#create-file {
+    background: #2b2b2b;
+    padding: 16px;
+    border-radius: 8px;
+    width: 300px;
+}
+
+#rename {
+    background: #2b2b2b;
+    padding: 16px;
+    border-radius: 8px;
+    width: 300px;
+}
+
+.create-file-window-text {
+    color: #4fc3f7;
+    align-items: center;
+}
+
+#delete-file {
+    background: #2b2b2b;
+    padding: 16px;
+    border-radius: 8px;
+    width: 300px;
+}
+
+#delete-file-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.conformation-box-button {
+    background: #3c3f41;
+    border: none;
+    color: white;
+    padding: 4px 8px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+#delete-file-permanent-conformation-div {
+    background: #3c3f41;
+    border: none;
+    color: white;
+    padding: 2px 4px;
+    cursor: pointer;
+    width: 150px;
+}
+
+.conformation-box-button:hover {
+    background: #4b4f51;
+}
+
+#delete-permanent-conformation {
+    width: 15px;
+    height: 15px;
+}
