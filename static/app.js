@@ -1,6 +1,8 @@
 let currentFile = null;
 let selectedPath = null;
 
+let terminalOpen = false;
+
 window.openTabs = window.openTabs || {};
 window.models = window.models || {};
 window.dirtyFiles = window.dirtyFiles || {};
@@ -23,6 +25,7 @@ function autoDetectLanguage(path, content) {
 
     const map = {
         py: "python",
+        pyw: "python",
         js: "javascript",
         ts: "typescript",
         html: "html",
@@ -236,4 +239,53 @@ function createTab(path) {
     openTabs[path] = { tab, label };
 
     switchTab(path);
+}
+
+function showOutput(text) {
+    let out = document.getElementById("terminal");
+
+    if (!out) {
+
+        out = document.createElement("div");
+        out.id = "terminal";
+        out.style.whiteSpace = "pre-wrap";
+        out.style.fontFamily = "monospace";
+        out.style.padding = "10px";
+        out.style.borderTop = "1px solid #333";
+        out.style.height = "200px";
+        out.style.overflowY = "auto";
+        document.body.appendChild(out);
+    }
+
+    out.textContent = text;
+}
+
+async function runFile() {
+    try {
+        if (!currentFile) {
+            console.warn("No file selected");
+            return;
+        }
+
+        const res = await api("/run", {
+            path: currentFile
+        });
+
+        console.log("Run response:", res);
+
+        if (!res) {
+            throw new Error("No response from server");
+        }
+
+        if (res.error) {
+            showOutput("ERROR:\n" + res.error);
+            return;
+        }
+
+        showOutput(res.output ?? "No output");
+
+    } catch (err) {
+        console.error("Run failed:", err);
+        showOutput("Frontend error:\n" + err.message);
+    }
 }

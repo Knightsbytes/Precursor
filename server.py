@@ -83,13 +83,26 @@ class IDEHandler(http.server.SimpleHTTPRequestHandler):
             self._send({"content": f.read()})
 
     def run_file(self, data):
-        path = os.path.join(ROOT_DIR, data["path"])
-        result = subprocess.run(
-            ["python", path],
-            capture_output=True,
-            text=True
-        )
-        self._send({"output": result.stdout + result.stderr})
+        try:
+            path = os.path.join(ROOT_DIR, data["path"])
+
+            print("Running:", path)  # debug
+
+            result = subprocess.run(
+                ["python", path],
+                capture_output=True,
+                text=True
+            )
+
+            self._send({
+                "output": result.stdout + result.stderr,
+                "returncode": result.returncode
+            })
+
+        except Exception as e:
+            self._send({
+                "error": str(e)
+            })
 
     def build_tree(self, path, rel=""):
         items = []

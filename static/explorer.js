@@ -135,4 +135,14 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById("delete-file-cancel").onclick = () => {
         closeDeleteFile()
     }
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {terminalOpen = false; document.getElementById("terminal").classList.add("hidden")}
+
+        if (e.key === "F5") {
+            e.preventDefault()
+            runFile(selectedPath)
+            console.log("F5 Pressed")
+        }
+    })
 });
