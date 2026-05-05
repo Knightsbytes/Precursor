@@ -51,6 +51,12 @@ html, body {
     padding: 6px;
 }
 
+#options-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px;
+}
+
 /* FILE ITEMS */
 .file-item {
     display: flex;

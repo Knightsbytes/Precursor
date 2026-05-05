@@ -178,8 +178,22 @@ function switchTab(path) {
     editor.setModel(model);
 }
 
-function showPanel() {
-    loadTree();
+function showPanel(panel) {
+    if (!panel) {return}
+    if (panel === "files") {
+        loadTree();
+        document.getElementById("sidebar-content").classList.remove("hidden")
+    }
+    else{
+        document.getElementById("sidebar-content").classList.add("hidden")
+    }
+
+    if (panel === "settings"){
+        document.getElementById("options-content").classList.remove("hidden")
+    }
+    else{
+        document.getElementById("options-content").classList.add("hidden")
+    }
 }
 
 window.onload = () => {

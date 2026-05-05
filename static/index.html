@@ -16,8 +16,12 @@
     <div id="sidebar">
         <div id="sidebar-header">
             <div onclick="showPanel('files')">FILES</div>
+            <div onClick="showPanel('settings')">SETTINGS</div>
         </div>
         <div id="sidebar-content"></div>
+        <div id="options-content" class="hidden">
+            Wow epic settings!
+        </div>
         <div id="toolbar">
             <button onclick="saveCurrent()">💾 Save</button>
             <button onclick="newFile()">➕ New</button>
