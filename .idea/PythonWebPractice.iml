@@ -4,7 +4,7 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.14 (PythonWebPractice) (2)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.14 (Precursor) (2)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="monaco-editor" level="application" />
   </component>
