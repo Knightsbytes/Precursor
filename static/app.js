@@ -255,13 +255,13 @@ function createTab(path) {
     switchTab(path);
 }
 
-function showOutput(text) {
-    document.getElementById("terminal").textContent = text;
-    console.log(JSON.stringify(text));
-}
-
 async function runFile() {
+
+    document.getElementById("terminal-window")
+        .classList.remove("hidden");
+
     try {
+
         if (!currentFile) {
             console.warn("No file selected");
             return;
@@ -277,17 +277,119 @@ async function runFile() {
             throw new Error("No response from server");
         }
 
+        const output = document.getElementById("terminal");
+
+        output.innerHTML = "";
+
         if (res.error) {
-            showOutput("ERROR:\n" + res.error);
+
+            const err = document.createElement("div");
+            err.className = "stderr";
+            err.textContent = res.error;
+
+            output.appendChild(err);
             return;
         }
 
-        showOutput(res.output ?? "No output");
+        // stdout
+        if (res.stdout) {
 
-    } catch (err) {
+            const out = document.createElement("div");
+            out.className = "stdout";
+            out.textContent = res.stdout;
+
+            output.appendChild(out);
+        }
+
+        // stderr
+        if (res.stderr) {
+
+            const lines = res.stderr.split("\n");
+
+            for (const line of lines) {
+
+                if (!line.trim()) continue;
+
+                const div = document.createElement("div");
+
+                if (line.includes("Traceback")) {
+                    div.className = "traceback";
+                }
+                else if (
+                    line.includes("Warning") ||
+                    line.includes("warning")
+                ) {
+                    div.className = "warning";
+                }
+                else {
+                    div.className = "stderr";
+                }
+
+                div.textContent = line;
+
+                output.appendChild(div);
+            }
+        }
+
+        // exit code message
+        const status = document.createElement("div");
+
+        if (res.code === 0) {
+            status.className = "success";
+            status.textContent =
+                `\nProcess finished successfully`;
+        }
+        else {
+            status.className = "stderr";
+            status.textContent =
+                `\nProcess exited with code ${res.code}`;
+        }
+
+        output.appendChild(status);
+
+    }
+    catch (err) {
+
         console.error("Run failed:", err);
-        showOutput("Frontend error:\n" + err.message);
+
+        const output = document.getElementById("terminal");
+
+        output.innerHTML = "";
+
+        const div = document.createElement("div");
+
+        div.className = "stderr";
+        div.textContent =
+            "Frontend error:\n" + err.message;
+
+        output.appendChild(div);
+    }
+}
+
+function showOutput(data) {
+
+    const output = document.getElementById("output");
+
+    output.innerHTML = "";
+
+    if (data.stdout) {
+        const out = document.createElement("div");
+        out.className = "stdout";
+        out.textContent = data.stdout;
+        output.appendChild(out);
     }
 
-    document.getElementById("terminal-window").classList.remove("hidden")
+    if (data.stderr) {
+        const err = document.createElement("div");
+        err.className = "stderr";
+        err.textContent = data.stderr;
+        output.appendChild(err);
+    }
+
+    if (data.code === 0) {
+        const ok = document.createElement("div");
+        ok.className = "success";
+        ok.textContent = "\nProcess finished successfully";
+        output.appendChild(ok);
+    }
 }

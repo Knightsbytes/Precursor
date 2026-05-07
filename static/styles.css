@@ -268,3 +268,38 @@ html, body {
     width: 15px;
     height: 15px;
 }
+
+#output {
+    background: #1e1e1e;
+    color: #ffffff;
+    padding: 10px;
+    font-family: monospace;
+    white-space: pre-wrap;
+    overflow-y: auto;
+}
+
+.stdout {
+    color: #d4d4d4;
+    white-space: pre-wrap;
+}
+
+.stderr {
+    color: #ff6b68;
+    white-space: pre-wrap;
+}
+
+.warning {
+    color: #e5c07b;
+    white-space: pre-wrap;
+}
+
+.traceback {
+    color: #ff5555;
+    font-weight: bold;
+    white-space: pre-wrap;
+}
+
+.success {
+    color: #89d185;
+    white-space: pre-wrap;
+}

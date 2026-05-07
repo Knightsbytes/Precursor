@@ -2,6 +2,8 @@ import http.server
 import json
 import os
 import subprocess
+import sys
+
 from config import PORT, ROOT_DIR
 import shutil
 #Default address is: localhost:8000
@@ -83,26 +85,23 @@ class IDEHandler(http.server.SimpleHTTPRequestHandler):
             self._send({"content": f.read()})
 
     def run_file(self, data):
-        try:
-            path = os.path.join(ROOT_DIR, data["path"])
 
-            print("Running:", path)  # debug
+        path = os.path.abspath(
+            os.path.join(ROOT_DIR, data["path"])
+        )
 
-            result = subprocess.run(
-                ["python", path],
-                capture_output=True,
-                text=True
-            )
+        result = subprocess.run(
+            [sys.executable, "-u", path],
+            capture_output=True,
+            text=True,
+            cwd=ROOT_DIR
+        )
 
-            self._send({
-                "output": result.stdout + result.stderr,
-                "returncode": result.returncode
-            })
-
-        except Exception as e:
-            self._send({
-                "error": str(e)
-            })
+        self._send({
+            "stdout": result.stdout,
+            "stderr": result.stderr,
+            "code": result.returncode
+        })
 
     def build_tree(self, path, rel=""):
         items = []
