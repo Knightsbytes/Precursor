@@ -137,7 +137,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {terminalOpen = false; document.getElementById("terminal").classList.add("hidden")}
+        if (e.key === "Escape") {terminalOpen = false; document.getElementById("terminal-window").classList.add("hidden")}
 
         if (e.key === "F5") {
             e.preventDefault()

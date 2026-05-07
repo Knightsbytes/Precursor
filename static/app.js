@@ -289,5 +289,5 @@ async function runFile() {
         showOutput("Frontend error:\n" + err.message);
     }
 
-    document.getElementById("terminal").classList.remove("hidden")
+    document.getElementById("terminal-window").classList.remove("hidden")
 }
