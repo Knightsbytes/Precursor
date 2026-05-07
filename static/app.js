@@ -256,22 +256,8 @@ function createTab(path) {
 }
 
 function showOutput(text) {
-    let out = document.getElementById("terminal");
-
-    if (!out) {
-
-        out = document.createElement("div");
-        out.id = "terminal";
-        out.style.whiteSpace = "pre-wrap";
-        out.style.fontFamily = "monospace";
-        out.style.padding = "10px";
-        out.style.borderTop = "1px solid #333";
-        out.style.height = "200px";
-        out.style.overflowY = "auto";
-        document.body.appendChild(out);
-    }
-
-    out.textContent = text;
+    document.getElementById("terminal").textContent = text;
+    console.log(JSON.stringify(text));
 }
 
 async function runFile() {
@@ -302,4 +288,6 @@ async function runFile() {
         console.error("Run failed:", err);
         showOutput("Frontend error:\n" + err.message);
     }
+
+    document.getElementById("terminal").classList.remove("hidden")
 }
