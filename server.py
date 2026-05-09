@@ -3,6 +3,8 @@ import json
 import os
 import subprocess
 import sys
+import urllib
+import webbrowser
 
 from config import PORT, ROOT_DIR
 import shutil
@@ -135,4 +137,5 @@ class IDEHandler(http.server.SimpleHTTPRequestHandler):
 
 if __name__ == "__main__":
     os.makedirs(ROOT_DIR, exist_ok=True)
+    webbrowser.open('http://localhost:8000')
     http.server.HTTPServer(("localhost", PORT), IDEHandler).serve_forever()
