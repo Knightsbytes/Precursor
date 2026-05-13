@@ -14,27 +14,48 @@
 <div id="root">
 
     <div id="sidebar">
+
         <div id="sidebar-header">
             <div onclick="showPanel('files')">FILES</div>
-            <div onClick="showPanel('settings')">SETTINGS</div>
+            <div onclick="showPanel('settings')">SETTINGS</div>
         </div>
+
         <div id="sidebar-content"></div>
+
         <div id="options-content" class="hidden">
-            <div id="">Epic settings</div>
+            <div>Epic settings</div>
         </div>
+
         <div id="toolbar">
             <button onclick="saveCurrent()">💾 Save</button>
             <button onclick="newFile()">➕ New</button>
-            <button onClick="deleteCurrent()">❌ Del</button>
+            <button onclick="deleteCurrent()">❌ Del</button>
         </div>
+
     </div>
 
     <div id="main">
+
         <div id="tabs"></div>
-        <div id="editor"></div>
-        <div id="terminal-window" class="hidden">
-            <div id="terminal" ></div>
+
+        <div id="workspace">
+
+            <div id="editor"></div>
+
+            <div id="terminal-window" class="hidden">
+
+                <div id="terminal-output"></div>
+
+                <input
+                    id="terminal-input"
+                    type="text"
+                    placeholder="Input..."
+                >
+
+            </div>
+
         </div>
+
     </div>
 
 </div>

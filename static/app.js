@@ -255,17 +255,106 @@ function createTab(path) {
     switchTab(path);
 }
 
+let polling = false;
+
+function appendConsole(text, cls = "stdout") {
+
+    const output = document.getElementById("terminal-output");
+
+    const div = document.createElement("div");
+
+    div.className = cls;
+    div.textContent = text;
+
+    output.appendChild(div);
+
+    output.scrollTop = output.scrollHeight;
+}
+
+async function startPolling() {
+
+    if (polling) return;
+
+    polling = true;
+
+    while (polling) {
+
+        try {
+
+            const res = await api("/poll");
+
+            if (!res || !res.output) {
+                await new Promise(r => setTimeout(r, 50));
+                continue;
+            }
+
+            for (const msg of res.output) {
+
+                let cls = "stdout";
+
+                if (msg.type === "stderr") {
+                    cls = "stderr";
+                }
+
+                if (
+                    msg.text.includes("Traceback")
+                ) {
+                    cls = "traceback";
+                }
+
+                if (
+                    msg.text.includes("Warning") ||
+                    msg.text.includes("warning")
+                ) {
+                    cls = "warning";
+                }
+
+                if (msg.type === "system") {
+                    cls = "success";
+                }
+
+                appendConsole(msg.text, cls);
+            }
+        }
+        catch (err) {
+
+            appendConsole(
+                "Polling failed: " + err.message,
+                "stderr"
+            );
+
+            polling = false;
+        }
+
+        await new Promise(r => setTimeout(r, 50));
+    }
+}
+
 async function runFile() {
 
     document.getElementById("terminal-window")
         .classList.remove("hidden");
 
+    const output =
+        document.getElementById("terminal-output");
+
+    output.innerHTML = "";
+
     try {
 
         if (!currentFile) {
-            console.warn("No file selected");
+
+            appendConsole(
+                "No file selected",
+                "warning"
+            );
+
             return;
         }
+
+        polling = false;
+
+        await new Promise(r => setTimeout(r, 60));
 
         const res = await api("/run", {
             path: currentFile
@@ -277,94 +366,52 @@ async function runFile() {
             throw new Error("No response from server");
         }
 
-        const output = document.getElementById("terminal");
-
-        output.innerHTML = "";
-
         if (res.error) {
 
-            const err = document.createElement("div");
-            err.className = "stderr";
-            err.textContent = res.error;
+            appendConsole(
+                res.error,
+                "stderr"
+            );
 
-            output.appendChild(err);
             return;
         }
 
-        // stdout
-        if (res.stdout) {
+        appendConsole(
+            `Running ${currentFile}\n`,
+            "system"
+        );
 
-            const out = document.createElement("div");
-            out.className = "stdout";
-            out.textContent = res.stdout;
-
-            output.appendChild(out);
-        }
-
-        // stderr
-        if (res.stderr) {
-
-            const lines = res.stderr.split("\n");
-
-            for (const line of lines) {
-
-                if (!line.trim()) continue;
-
-                const div = document.createElement("div");
-
-                if (line.includes("Traceback")) {
-                    div.className = "traceback";
-                }
-                else if (
-                    line.includes("Warning") ||
-                    line.includes("warning")
-                ) {
-                    div.className = "warning";
-                }
-                else {
-                    div.className = "stderr";
-                }
-
-                div.textContent = line;
-
-                output.appendChild(div);
-            }
-        }
-
-        // exit code message
-        const status = document.createElement("div");
-
-        if (res.code === 0) {
-            status.className = "success";
-            status.textContent =
-                `\nProcess finished successfully`;
-        }
-        else {
-            status.className = "stderr";
-            status.textContent =
-                `\nProcess exited with code ${res.code}`;
-        }
-
-        output.appendChild(status);
-
+        startPolling();
     }
     catch (err) {
 
         console.error("Run failed:", err);
 
-        const output = document.getElementById("terminal");
-
-        output.innerHTML = "";
-
-        const div = document.createElement("div");
-
-        div.className = "stderr";
-        div.textContent =
-            "Frontend error:\n" + err.message;
-
-        output.appendChild(div);
+        appendConsole(
+            "Frontend error:\n" + err.message,
+            "stderr"
+        );
     }
 }
+
+document.getElementById("terminal-input")
+.addEventListener("keydown", async (e) => {
+
+    if (e.key !== "Enter") return;
+
+    const value = e.target.value;
+
+    if (!value.trim()) return;
+
+    appendConsole("> " + value, "stdin");
+
+    await api("/stdin", {
+        input: value
+    });
+
+    e.target.value = "";
+});
+
 
 function showOutput(data) {
 

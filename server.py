@@ -3,12 +3,15 @@ import json
 import os
 import subprocess
 import sys
+import threading
 import urllib
 import webbrowser
-
 from config import PORT, ROOT_DIR
 import shutil
 #Default address is: localhost:8000
+
+process = None
+console_buffer = []
 
 class IDEHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
@@ -44,6 +47,9 @@ class IDEHandler(http.server.SimpleHTTPRequestHandler):
         if self.path == "/run":
             return self.run_file(data)
 
+        if self.path == "/stdin":
+            return self.send_input(data)
+
         if self.path.startswith("/delete"):
             rel = data["path"].lstrip("/\\")
             path = os.path.abspath(os.path.join(ROOT_DIR, rel))
@@ -64,6 +70,17 @@ class IDEHandler(http.server.SimpleHTTPRequestHandler):
                 return self._send({"status": "deleted"})
             else:
                 return self._send({"error": "File not found"}, 404)
+
+        if self.path == "/poll":
+            return self.poll_output()
+
+    def poll_output(self):
+        global console_buffer
+
+        data = console_buffer[:]
+        console_buffer.clear()
+
+        self._send({"output": data})
 
     def save_file(self, data):
         root = os.path.abspath(ROOT_DIR)
@@ -87,23 +104,53 @@ class IDEHandler(http.server.SimpleHTTPRequestHandler):
             self._send({"content": f.read()})
 
     def run_file(self, data):
+        global process, console_buffer
 
-        path = os.path.abspath(
-            os.path.join(ROOT_DIR, data["path"])
-        )
+        path = os.path.abspath(os.path.join(ROOT_DIR, data["path"]))
 
-        result = subprocess.run(
-            [sys.executable, "-u", path],
-            capture_output=True,
+        if process and process.poll() is None:
+            process.kill()
+
+        console_buffer.clear()
+
+        process = subprocess.Popen(
+            [sys.executable, path],
+            cwd=ROOT_DIR,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
             text=True,
-            cwd=ROOT_DIR
+            bufsize=1
         )
 
-        self._send({
-            "stdout": result.stdout,
-            "stderr": result.stderr,
-            "code": result.returncode
-        })
+        def read_output():
+            global console_buffer
+
+            for line in iter(process.stdout.readline, ''):
+                console_buffer.append({
+                    "type": "stdout",
+                    "text": line
+                })
+
+            process.wait()
+
+            console_buffer.append({
+                "type": "system",
+                "text": f"\nProcess exited with code {process.returncode}\n"
+            })
+
+        threading.Thread(target=read_output, daemon=True).start()
+
+        self._send({"status": "started"})
+
+    def send_input(self, data):
+        global process
+
+        if process and process.poll() is None:
+            process.stdin.write(data["input"] + "\n")
+            process.stdin.flush()
+
+        self._send({"status": "sent"})
 
     def build_tree(self, path, rel=""):
         items = []
