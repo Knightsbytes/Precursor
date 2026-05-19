@@ -1,5 +1,4 @@
-import time
+myVar: str = "Wow epic string"
 
-for i in range(100):
-    print(i)
-    time.sleep(1)
+for i in range(10):
+    print(i + 1)
